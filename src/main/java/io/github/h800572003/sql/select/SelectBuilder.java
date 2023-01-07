@@ -14,18 +14,22 @@ import java.util.stream.Collectors;
  */
 public class SelectBuilder implements ISqlBuilder, ISql {
 
+    public static final String SELECT = "SELECT ";
+    public static final String FROM = "FROM";
+    public static final String GROUP_BY = "GROUP BY";
     private List<ISql> orders = new ArrayList<>();//順序
 
 
-    private SelectBuilder(){
+    private SelectBuilder() {
 
     }
-    public static SelectBuilder newSelect(){
+
+    public static SelectBuilder newSelect() {
         return new SelectBuilder();
     }
 
     public SelectBuilder select(String sql) {
-        ISql select = SqlBuilder.write("select " + sql);
+        ISql select = SqlBuilder.write(SELECT + sql);
         this.orders.add(select);
         return this;
 
@@ -43,7 +47,7 @@ public class SelectBuilder implements ISqlBuilder, ISql {
     }
 
     public SelectBuilder from(String sql) {
-        ISql write = SqlBuilder.write(" from " + sql);
+        ISql write = SqlBuilder.write(" " + FROM + " " + sql);
         return from(write);
     }
 
@@ -84,5 +88,15 @@ public class SelectBuilder implements ISqlBuilder, ISql {
         SqlJoin<SelectBuilder> sqlJoin = new SqlJoin<>(this);
         orders.add(sqlJoin);
         return sqlJoin;
+    }
+
+    public SelectBuilder groupBy(ISql iSql) {
+        orders.add(iSql);
+        return this;
+    }
+
+    public SelectBuilder groupBy(String... fields) {
+        orders.add(SqlBuilder.write(SqlBuilder.write(" " + GROUP_BY + " "), SqlBuilder.comma(fields)));
+        return this;
     }
 }

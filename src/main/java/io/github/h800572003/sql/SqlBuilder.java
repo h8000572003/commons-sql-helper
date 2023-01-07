@@ -134,6 +134,16 @@ public class SqlBuilder implements ISql {
                 .map(Objects::toString)//
                 .collect(Collectors.joining(",")));//
     }
+    public static ISql max(String value){
+        return write(Selects.MAX,SqlBuilder.write("(",value,")"));
+    }
+    public static ISql distinct(String value){
+        return write(Selects.DISTINCT,SqlBuilder.write(value));
+    }
+    public static ISql min(String value){
+        return write(Selects.MIN,SqlBuilder.write("(",value,")"));
+    }
+
 
     /**
      * 逗點分開

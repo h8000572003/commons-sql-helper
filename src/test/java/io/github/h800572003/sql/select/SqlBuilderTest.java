@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 class SqlBuilderTest {
 
 
-
     @Test
     void test_select_cmd1() {
 
@@ -106,7 +105,7 @@ class SqlBuilderTest {
         String sql = SelectBuilder.newSelect()
                 .select("*")
                 .from("student s").where(
-                        SqlBuilder.getParameter("id", SqlOption.IN, SqlBuilder.clad(    SelectBuilder.newSelect().select("id").from("student")))
+                        SqlBuilder.getParameter("id", SqlOption.IN, SqlBuilder.clad(SelectBuilder.newSelect().select("id").from("student")))
                 ).build().toUpperCase();
         log.info("sql:{}", sql);
 
@@ -120,13 +119,11 @@ class SqlBuilderTest {
 
         String sql = SelectBuilder.newSelect().select("s1.*").from("student s1")
                 .createJoin()
-                .join(SqlJoin.JoinType.JOIN,"student s2")
+                .join(SqlJoin.JoinType.JOIN, "student s2")
                 .on(SqlBuilder.getParameter("s1.id", SqlOption.EQ, SqlBuilder.write("s2.id")))
                 .back()
                 .where(SqlBuilder.getParameter("s1.id", SqlOption.EQ, SqlBuilder.quotation("B1234")))
                 .build().toUpperCase();
-
-
 
 
         log.info("sql:{}", sql);
@@ -134,5 +131,37 @@ class SqlBuilderTest {
         final String ansSql = "select s1.* from student s1 join student s2 on s1.id = s2.id where s1.id = 'B1234'";
         Assertions.assertEquals(sql, ansSql.toUpperCase());
 
+    }
+
+    @Test
+    void testGroup() {
+        String sql = SelectBuilder.newSelect()
+                .createSelect()
+                .add(SqlBuilder.max("id"))
+                .back()
+                .from("student")
+                .groupBy("id","name")
+                .build().toUpperCase();
+        log.info("sql:{}", sql);
+
+        final String groupBy = "select max (id) from student group by id,name";
+
+
+        Assertions.assertEquals(sql, groupBy.toUpperCase());
+    }
+    @Test
+    void testDistinct() {
+        String sql = SelectBuilder.newSelect()
+                .createSelect()
+                .add(SqlBuilder.distinct("id"))
+                .back()
+                .from("student")
+                .build().toUpperCase();
+        log.info("sql:{}", sql);
+
+        final String groupBy = "select distinct id from student";
+
+
+        Assertions.assertEquals(sql, groupBy.toUpperCase());
     }
 }
