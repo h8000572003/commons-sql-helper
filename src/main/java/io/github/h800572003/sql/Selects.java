@@ -7,6 +7,15 @@ public enum Selects implements ISql {
     DISTINCT("DISTINCT "),
 
     FROM(" FROM "),
+
+    ASC(" ASC "),//
+
+    DESC(" DESC "),//
+
+    ORDER_BY(" Order by "),//
+
+
+
     ;
 
     final String sql;

@@ -48,10 +48,10 @@ class SqlBuilderTest {
                 .orderBy()//
                 .add(SqlBuilder.write("value1"))//
                 .add(SqlBuilder.write("value2"))//
-                .isAsc()
+                .isDesc()
                 .build().toUpperCase();
         log.info("sql:{}", sql);
-        Assertions.assertEquals(sql, "select * from XXX where value1 = :value1 AND value2 = :value2 order by value1,value2 asc ".toUpperCase());
+        Assertions.assertEquals(sql, "select * from XXX where value1 = :value1 AND value2 = :value2 order by value1,value2 desc ".toUpperCase());
 
     }
 
@@ -69,10 +69,10 @@ class SqlBuilderTest {
                 .orderBy()//
                 .add(SqlBuilder.write("value1"))//
                 .add(SqlBuilder.write("value2"))//
-                .isAsc()
+
                 .build().toUpperCase();
         log.info("sql:{}", sql);
-        Assertions.assertEquals(sql, "select value1,value2 from XXX where value1 = :value1 AND value2 = :value2 order by value1,value2 asc ".toUpperCase());
+        Assertions.assertEquals(sql, "select value1,value2 from XXX where value1 = :value1 AND value2 = :value2 order by value1,value2".toUpperCase());
 
     }
 
@@ -91,10 +91,10 @@ class SqlBuilderTest {
                 .orderBy()//
                 .add(SqlBuilder.write("value1"))//
                 .add(SqlBuilder.write("value2"))//
-                .isAsc()
+                .isDesc()
                 .build().toUpperCase();
         log.info("sql:{}", sql);
-        Assertions.assertEquals(sql, "select value1,value2 from XXX where value1 = :value1 AND value2 = :value2 and value2 in (:value2,:value1) order by value1,value2 asc ".toUpperCase());
+        Assertions.assertEquals(sql, "select value1,value2 from XXX where value1 = :value1 AND value2 = :value2 and value2 in (:value2,:value1) order by value1,value2 desc ".toUpperCase());
 
     }
 
@@ -140,7 +140,7 @@ class SqlBuilderTest {
                 .add(SqlBuilder.max("id"))
                 .back()
                 .from("student")
-                .groupBy("id","name")
+                .groupBy("id", "name")
                 .build().toUpperCase();
         log.info("sql:{}", sql);
 
@@ -149,6 +149,7 @@ class SqlBuilderTest {
 
         Assertions.assertEquals(sql, groupBy.toUpperCase());
     }
+
     @Test
     void testDistinct() {
         String sql = SelectBuilder.newSelect()
@@ -164,6 +165,7 @@ class SqlBuilderTest {
 
         Assertions.assertEquals(sql, groupBy.toUpperCase());
     }
+
     @Test
     void testCreatSelect() {
         String sql = SelectBuilder.newSelect()

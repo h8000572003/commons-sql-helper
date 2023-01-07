@@ -2,6 +2,7 @@ package io.github.h800572003.sql.select;
 
 import io.github.h800572003.sql.ISql;
 import io.github.h800572003.sql.ISqlBack;
+import io.github.h800572003.sql.Selects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 
 public class SqlOrderBy implements ISql, ISqlBack<SelectBuilder> {
-    public static final String ORDER_BY = " Order by ";
-    public static final String ASC = " asc ";
+
+
     private final SelectBuilder selectBuilder;
     private final List<ISql> sqls = new ArrayList<>();
-    private boolean isAsc = false;
+    private boolean isDesc = false;
 
     public SqlOrderBy(SelectBuilder selectBuilder) {
         this.selectBuilder = selectBuilder;
@@ -31,8 +32,8 @@ public class SqlOrderBy implements ISql, ISqlBack<SelectBuilder> {
 
     }
 
-    public SqlOrderBy isAsc() {
-        isAsc = true;
+    public SqlOrderBy isDesc() {
+        this.isDesc = true;
         return this;
     }
 
@@ -48,12 +49,12 @@ public class SqlOrderBy implements ISql, ISqlBack<SelectBuilder> {
     @Override
     public String toString() {
         StringBuilder stringBuffer = new StringBuilder();
-        stringBuffer.append(ORDER_BY);
+        stringBuffer.append(Selects.ORDER_BY);
         stringBuffer.append(sqls.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(",")));
-        if (isAsc) {
-            stringBuffer.append(ASC);
+        if (isDesc) {
+            stringBuffer.append(Selects.DESC);
         }
         return stringBuffer.toString();
     }
