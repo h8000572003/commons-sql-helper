@@ -164,4 +164,17 @@ class SqlBuilderTest {
 
         Assertions.assertEquals(sql, groupBy.toUpperCase());
     }
+    @Test
+    void testCreatSelect() {
+        String sql = SelectBuilder.newSelect()
+                .createSelect()
+                .add("id")
+                .add("name")
+                .back()
+                .from(SqlBuilder.write("student"))
+                .build().toUpperCase();
+        log.info("sql:{}", sql);
+
+        final String groupBy = "select id,name id from student";
+    }
 }

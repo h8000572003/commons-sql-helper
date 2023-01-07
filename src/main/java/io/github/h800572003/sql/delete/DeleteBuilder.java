@@ -28,6 +28,11 @@ public class DeleteBuilder  implements ISqlBuilder, ISql {
         this.sqls.add(selectWhere);
         return selectWhere;
     }
+    public SqlAndOrCondition<DeleteBuilder> where(ISql sql) {
+        SqlAndOrCondition<DeleteBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, sql);
+        this.sqls.add(selectWhere);
+        return selectWhere;
+    }
 
 
     @Override

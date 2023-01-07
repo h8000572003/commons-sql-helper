@@ -5,6 +5,8 @@ public enum Selects implements ISql {
     MIN("MIN"),
     COUNT("COUNT "),
     DISTINCT("DISTINCT "),
+
+    FROM(" FROM "),
     ;
 
     final String sql;

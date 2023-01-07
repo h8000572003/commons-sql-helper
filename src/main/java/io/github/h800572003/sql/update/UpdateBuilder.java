@@ -39,6 +39,12 @@ public class UpdateBuilder implements ISqlBuilder, ISql {
         return selectWhere;
 
     }
+    public SqlAndOrCondition<UpdateBuilder> where(ISql sql) {
+        SqlAndOrCondition<UpdateBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, sql);
+        this.sqls.add(selectWhere);
+        return selectWhere;
+
+    }
 
 
     @Override

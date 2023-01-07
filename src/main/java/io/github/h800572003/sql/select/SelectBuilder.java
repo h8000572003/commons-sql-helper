@@ -2,6 +2,7 @@ package io.github.h800572003.sql.select;
 
 import io.github.h800572003.sql.ISql;
 import io.github.h800572003.sql.ISqlBuilder;
+import io.github.h800572003.sql.Selects;
 import io.github.h800572003.sql.SqlBuilder;
 
 import java.util.ArrayList;
@@ -42,17 +43,23 @@ public class SelectBuilder implements ISqlBuilder, ISql {
     }
 
     public SelectBuilder from(ISql sql) {
-        this.orders.add(sql);
+        this.orders.add(SqlBuilder.write(Selects.FROM,sql));
         return this;
     }
 
     public SelectBuilder from(String sql) {
-        ISql write = SqlBuilder.write(" " + FROM + " " + sql);
-        return from(write);
+        ISql write = SqlBuilder.write(Selects.FROM,SqlBuilder.write(sql));
+        this.orders.add(write);
+        return this;
     }
 
     public SqlAndOrCondition<SelectBuilder> where(SqlBuilder.ValueParameter sqlWhere) {
         SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, sqlWhere);
+        this.orders.add(selectWhere);
+        return selectWhere;
+    }
+    public SqlAndOrCondition<SelectBuilder> where(ISql iSql) {
+        SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, iSql);
         this.orders.add(selectWhere);
         return selectWhere;
     }
