@@ -133,6 +133,7 @@ class SqlBuilderTest {
 
     }
 
+
     @Test
     void testGroup() {
         String sql = SelectBuilder.newSelect()
@@ -177,6 +178,69 @@ class SqlBuilderTest {
                 .build().toUpperCase();
         log.info("sql:{}", sql);
 
-        final String groupBy = "select id,name id from student";
+        final String ans = "select id,name from student";
+
+        Assertions.assertEquals(sql, ans.toUpperCase());
+    }
+
+    /**
+     * 取消where 條件
+     */
+    @Test
+    void testCreatSelectOptionNoShow() {
+        String sql = SelectBuilder.newSelect()
+                .createSelect()
+                .add("id")
+                .add("name")
+                .back()
+                .from(SqlBuilder.write("student"))
+                .where(SqlBuilder.getParameter("id",SqlOption.EQ,SqlBuilder.quotation("abc")),()->false)
+                .build().toUpperCase();
+        log.info("sql:{}", sql);
+
+        final String ans = "select id,name from student";
+
+        Assertions.assertEquals(sql, ans.toUpperCase());
+    }
+
+    /**
+     * 顯示Where
+     */
+    @Test
+    void testCreatSelectRequire() {
+        String sql = SelectBuilder.newSelect()
+                .createSelect()
+                .add("id")
+                .add("name")
+                .back()
+                .from(SqlBuilder.write("student"))
+                .where(SqlBuilder.getParameter("id",SqlOption.EQ,SqlBuilder.quotation("idA")),()->true)
+                .and(SqlBuilder.getParameter("nameX",SqlOption.EQ,SqlBuilder.quotation("nameXB")),()->false)
+                .and(SqlBuilder.getParameter("name",SqlOption.EQ,SqlBuilder.quotation("nameX")),()->true)
+                .build().toUpperCase();
+        log.info("sql:{}", sql);
+
+        final String ans = "select id,name from student where id = 'idA' and name = 'nameX'";
+
+        Assertions.assertEquals(sql, ans.toUpperCase());
+    }
+
+    @Test
+    void testCreatSelectWithoutWhere() {
+        String sql = SelectBuilder.newSelect()
+                .createSelect()
+                .add("id")
+                .add("name")
+                .back()
+                .from(SqlBuilder.write("student"))
+                .where(SqlBuilder.getParameter("id",SqlOption.EQ,SqlBuilder.quotation("idA")),()->false)
+                .and(SqlBuilder.getParameter("nameX",SqlOption.EQ,SqlBuilder.quotation("nameXB")),()->false)
+                .and(SqlBuilder.getParameter("name",SqlOption.EQ,SqlBuilder.quotation("nameX")),()->false)
+                .build().toUpperCase();
+        log.info("sql:{}", sql);
+
+        final String ans = "select id,name from student";
+
+        Assertions.assertEquals(sql, ans.toUpperCase());
     }
 }

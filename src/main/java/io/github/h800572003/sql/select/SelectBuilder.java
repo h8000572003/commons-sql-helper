@@ -8,6 +8,7 @@ import io.github.h800572003.sql.SqlBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 
 /**
@@ -43,23 +44,32 @@ public class SelectBuilder implements ISqlBuilder, ISql {
     }
 
     public SelectBuilder from(ISql sql) {
-        this.orders.add(SqlBuilder.write(Selects.FROM,sql));
+        this.orders.add(SqlBuilder.write(Selects.FROM, sql));
         return this;
     }
 
     public SelectBuilder from(String sql) {
-        ISql write = SqlBuilder.write(Selects.FROM,SqlBuilder.write(sql));
+        ISql write = SqlBuilder.write(Selects.FROM, SqlBuilder.write(sql));
         this.orders.add(write);
         return this;
     }
 
     public SqlAndOrCondition<SelectBuilder> where(SqlBuilder.ValueParameter sqlWhere) {
-        SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, sqlWhere);
+        return this.where(sqlWhere, () -> true);
+    }
+
+    public SqlAndOrCondition<SelectBuilder> where(SqlBuilder.ValueParameter sqlWhere, BooleanSupplier condition) {
+        SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, condition.getAsBoolean() ? sqlWhere : null);
         this.orders.add(selectWhere);
         return selectWhere;
     }
+
     public SqlAndOrCondition<SelectBuilder> where(ISql iSql) {
-        SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, iSql);
+        return where(iSql, () -> true);
+    }
+
+    public SqlAndOrCondition<SelectBuilder> where(ISql iSql, BooleanSupplier condition) {
+        SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, condition.getAsBoolean() ? iSql : null);
         this.orders.add(selectWhere);
         return selectWhere;
     }

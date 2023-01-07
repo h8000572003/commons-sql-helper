@@ -8,6 +8,7 @@ import io.github.h800572003.sql.SqlBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 
 public class SqlJoin<T extends ISqlBuilder> implements ISql, ISqlBack<T> {
@@ -55,6 +56,8 @@ public class SqlJoin<T extends ISqlBuilder> implements ISql, ISqlBack<T> {
         sqls.add(sqlJoinAndOr);
         return sqlJoinAndOr;
     }
+
+
 
     @Override
     public T back() {
