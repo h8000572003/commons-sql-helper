@@ -1,23 +1,28 @@
 SQL 文字輔助工具
 
-
 ## 目的簡化撰寫Sql參數因複雜造成錯誤
 
-
 ### 變更紀錄
+
 1.2023.01.06 基礎新增刪修建立
 2.2023.01.07 加入min max distinct
-3.2023.01.07 加入order by 與 where 條件 
-
+3.2023.01.07 加入order by 與 where 條件
 
 ### 常用元件
 
 - ISql:sql定義介面
 - SqlBuilder：產生括弧、逗點、單引號，等
 
+
+```mermaid
+graph BT
+    ISql -->|組合| ISql
+```
+
 提供insert delete update select 四種方式
 
 ### SELECT
+
 ```java
 
 
@@ -90,7 +95,7 @@ void test_select_cmd3() {
                 .add("ID", "'B1234'")
                 .add("NAME", "'大寶'")
                 .build().toUpperCase();
-        
+    
         String ans = "INSERT INTO STUDENT(ID,NAME) VALUES ('B1234','大寶')";
 
         log.info("sql:{}", sql);
