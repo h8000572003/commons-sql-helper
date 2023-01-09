@@ -26,6 +26,20 @@ class SqlBuilderTest {
     }
 
     @Test
+    void test_select_all() {
+
+        String sql = SelectBuilder.newSelect().selectAll()
+                .from("XXX")
+                .where(SqlBuilder.getParameter("value1", SqlOption.EQ, SqlBuilder.write(":value1")))
+                .and(SqlBuilder.getParameter("value2", SqlOption.EQ, SqlBuilder.write(":value2")))
+                .build().toUpperCase();
+
+        log.info("sql:{}", sql);
+        Assertions.assertEquals(sql, "select * from XXX where value1 = :value1 AND value2 = :value2".toUpperCase());
+
+    }
+
+    @Test
     void test_select_cmd1_with() {
 
         String sql = SelectBuilder.newSelect().select("*")
@@ -47,7 +61,7 @@ class SqlBuilderTest {
                 .where(SqlBuilder.getParameter("value1", SqlOption.EQ, SqlBuilder.write(":value1")))
                 .and(SqlBuilder.getParameter("value2", SqlOption.EQ, SqlBuilder.write(":value2")))//
                 .back()//
-                .orderBy()//
+                .createOrderBy()//
                 .add(SqlBuilder.write("value1"))//
                 .add(SqlBuilder.write("value2"))//
                 .isDesc()
@@ -68,7 +82,7 @@ class SqlBuilderTest {
                 .where(SqlBuilder.getParameter("value1", SqlOption.EQ, SqlBuilder.write(":value1")))
                 .and(SqlBuilder.getParameter("value2", SqlOption.EQ, SqlBuilder.write(":value2")))//
                 .back()//
-                .orderBy()//
+                .createOrderBy()//
                 .add(SqlBuilder.write("value1"))//
                 .add(SqlBuilder.write("value2"))//
 
@@ -90,7 +104,7 @@ class SqlBuilderTest {
                 .and(SqlBuilder.getParameter("value2", SqlOption.EQ, SqlBuilder.write(":value2")))//
                 .and(SqlBuilder.getParameter("value2", SqlOption.IN, SqlBuilder.commaClad(":value2", ":value1")))//
                 .back()//
-                .orderBy()//
+                .createOrderBy()//
                 .add(SqlBuilder.write("value1"))//
                 .add(SqlBuilder.write("value2"))//
                 .isDesc()
@@ -149,7 +163,40 @@ class SqlBuilderTest {
 
         final String groupBy = "select max (id) from student group by id,name";
 
+        Assertions.assertEquals(sql, groupBy.toUpperCase());
+    }
 
+
+    @Test
+    void testGroupWithSame() {
+
+        ISql select =SqlBuilder.comma("id","name");
+
+        String sql = SelectBuilder.newSelect()
+                .select(select)
+                .from("student")
+                .groupBy(SqlBuilder.write(select,SqlBuilder.write("")))
+                .build().toUpperCase();
+        log.info("sql:{}", sql);
+
+        final String groupBy = "select id,name from student group by id,name";
+
+        Assertions.assertEquals(sql, groupBy.toUpperCase());
+    }
+    @Test
+    void testGroup2_isql() {
+        String sql = SelectBuilder.newSelect()
+                .createSelect()
+                .add(SqlBuilder.max("ID"))
+                .back()
+                .from("STUDENT")
+                .groupBy(
+                        SqlBuilder.comma(SqlBuilder.write("ID"),
+                                        SqlBuilder.write(SqlBuilder.write("NAME")
+                        )))
+                        .build().toUpperCase();
+        log.info("sql:{}", sql);
+        final String groupBy = "select max (id) from student group by id,name";
         Assertions.assertEquals(sql, groupBy.toUpperCase());
     }
 
@@ -274,6 +321,17 @@ class SqlBuilderTest {
 
 
         String ans = "select * from student where id is  null ";
+        log.info("sql:{}", sql);
+        Assertions.assertEquals(sql, ans.toUpperCase());
+    }
+
+    @Test
+    void test_append() {
+        String sql = SelectBuilder.newSelect().append("HELLO")
+                .append(" TOM ")
+                .build().toUpperCase();
+
+        String ans = "HELLO TOM ";
         log.info("sql:{}", sql);
         Assertions.assertEquals(sql, ans.toUpperCase());
     }

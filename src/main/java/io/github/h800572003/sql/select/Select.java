@@ -1,9 +1,6 @@
 package io.github.h800572003.sql.select;
 
-import io.github.h800572003.sql.ISql;
-import io.github.h800572003.sql.ISqlBack;
-import io.github.h800572003.sql.ISqlBuilder;
-import io.github.h800572003.sql.SqlBuilder;
+import io.github.h800572003.sql.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * 查詢
  */
-public class Select<T extends  ISqlBuilder> implements ISql, ISqlBack<T> {
+public class Select<T extends ISqlBuilder> implements ISql, ISqlBack<T> {
     private List<ISql> sqls = new ArrayList<>();
     private final T builder;
 
@@ -30,8 +27,9 @@ public class Select<T extends  ISqlBuilder> implements ISql, ISqlBack<T> {
         this.add(SqlBuilder.write(sql));
         return this;
     }
+
     @Override
-    public T back(){
+    public T back() {
         return builder;
     }
 
@@ -42,9 +40,10 @@ public class Select<T extends  ISqlBuilder> implements ISql, ISqlBack<T> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuffer=new StringBuilder("SELECT ");
-        stringBuffer.append( this.sqls
+        StringBuilder stringBuffer = new StringBuilder(Selects.SELECT.toString());
+        stringBuffer.append(this.sqls
                 .stream()//
+                .filter(Objects::nonNull)
                 .map(Objects::toString)//
                 .collect(Collectors
                         .joining(",")));

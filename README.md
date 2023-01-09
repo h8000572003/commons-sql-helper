@@ -6,7 +6,8 @@ SQL 文字輔助工具
 
 1.2023.01.06 基礎新增刪修建立
 2.2023.01.07 加入min max distinct
-3.2023.01.07 加入order by 與 where 條件
+3.0.0.5.1 2023.01.07 加入order by 與 where 條件
+4.group by加入客製化
 
 # 設計概念
 

@@ -5,6 +5,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SqlBuilder implements ISql {
+    public static final String LC = Selects.LEFT_CLAD.toString();
+    public static final String RC = Selects.RIGHT_CLAD.toString();
+    public static final String COMMA = Selects.COMMA.toString();
+    public static final String QUOTATION = Selects.QUOTATION.toString();
     private final String sql;
 
     public static class StringValueSqlHolder {
@@ -74,6 +78,7 @@ public class SqlBuilder implements ISql {
         return write(Stream//
                 .of(values)//
                 .map(SqlBuilder::write)//
+                .filter(Objects::nonNull)
                 .map(Objects::toString)
                 .collect(Collectors.joining()));//
     }
@@ -81,32 +86,36 @@ public class SqlBuilder implements ISql {
     public static ISql write(ISql... sqls) {
         return write(Stream//
                 .of(sqls)//
+                .filter(Objects::nonNull)
                 .map(Objects::toString)//
                 .collect(Collectors.joining()));//
     }
 
     public static ISql clad(String... value) {
-        return write("(" + Stream//
+        return write(LC + Stream//
                 .of(value)//
+                .filter(Objects::nonNull)
                 .map(SqlBuilder::write)//
                 .map(Objects::toString)
-                .collect(Collectors.joining()) + ")");//
+                .collect(Collectors.joining()) + RC);//
     }
 
     public static ISql commaClad(String... value) {
-        return write("(" + Stream//
+        return write(LC + Stream//
                 .of(value)//
+                .filter(Objects::nonNull)
                 .map(SqlBuilder::write)//
                 .map(Objects::toString)
-                .collect(Collectors.joining(",")) + ")");//
+                .collect(Collectors.joining(COMMA)) + RC);//
     }
 
     public static ISql commaClad(ISql... value) {
-        return write("(" + Stream//
+        return write(LC + Stream//
                 .of(value)//
+                .filter(Objects::nonNull)
                 .map(SqlBuilder::write)//
                 .map(Objects::toString)
-                .collect(Collectors.joining(",")) + ")");//
+                .collect(Collectors.joining(COMMA)) + RC);//
     }
 
     /**
@@ -116,10 +125,10 @@ public class SqlBuilder implements ISql {
      * @return
      */
     public static ISql clad(ISql... sqls) {
-        return write("(" + Stream//
+        return write(LC + Stream//
                 .of(sqls)//
                 .map(Objects::toString)//
-                .collect(Collectors.joining()) + ")");//
+                .collect(Collectors.joining()) + RC);//
     }
 
     /**
@@ -132,16 +141,16 @@ public class SqlBuilder implements ISql {
         return write(Stream//
                 .of(sqls)//
                 .map(Objects::toString)//
-                .collect(Collectors.joining(",")));//
+                .collect(Collectors.joining(COMMA)));//
     }
     public static ISql max(String value){
-        return write(Selects.MAX,SqlBuilder.write("(",value,")"));
+        return write(Selects.MAX,SqlBuilder.write(LC,value, RC));
     }
     public static ISql distinct(String value){
         return write(Selects.DISTINCT,SqlBuilder.write(value));
     }
     public static ISql min(String value){
-        return write(Selects.MIN,SqlBuilder.write("(",value,")"));
+        return write(Selects.MIN,SqlBuilder.write(LC,value, RC));
     }
 
 
@@ -155,13 +164,13 @@ public class SqlBuilder implements ISql {
         return write(Stream//
                 .of(values)//
                 .map(Objects::toString)//
-                .collect(Collectors.joining(",")));//
+                .collect(Collectors.joining(COMMA)));//
     }
 
     public static ISql quotation(ISql sql) {
         return write(Stream//
                 .of(sql)//
-                .map(i -> "'" + i.toString() + "'")//
+                .map(i -> QUOTATION + i.toString() + QUOTATION)//
                 .collect(Collectors.joining()));//
     }
 
@@ -172,20 +181,21 @@ public class SqlBuilder implements ISql {
     public static ISql quotationAndComma(ISql... sqls) {
         return write(Stream//
                 .of(sqls)//
-                .map(i -> "'" + i.toString() + "'")//
-                .collect(Collectors.joining(",")));//
+                .map(i -> QUOTATION + i.toString() + QUOTATION)//
+                .collect(Collectors.joining(COMMA)));//
     }
 
     public static ISql quotationAndComma(String... value) {
         return write(Stream//
                 .of(value)//
-                .map(i -> "'" + i + "'")//
-                .collect(Collectors.joining(",")));//
+                .map(i -> QUOTATION + i + QUOTATION)//
+                .collect(Collectors.joining(COMMA)));//
     }
 
     public static ValueParameter getParameter(String field, ISql operation, ISql value){
         return new ValueParameter(field,operation,value);
     }
+
 
     @Override
     public String toString() {
@@ -194,6 +204,7 @@ public class SqlBuilder implements ISql {
 
     public static class ValueParameter implements ISql {
 
+        public static final String VALUE_FORMAT = "%s%s%s";
         private ISql sql;
 
         public ValueParameter(ISql sql) {
@@ -201,7 +212,7 @@ public class SqlBuilder implements ISql {
         }
 
         ValueParameter(String field, ISql operation, ISql value) {
-            this.sql = write(String.format("%s%s%s", field, operation, value));
+            this.sql = write(String.format(VALUE_FORMAT, field, operation, value));
         }
 
 

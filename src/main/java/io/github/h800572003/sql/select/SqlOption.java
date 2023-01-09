@@ -11,6 +11,7 @@ public enum SqlOption implements ISql {
     NE(" != "),//
     LT(" < "),//
     GT(" > "),//
+    EC("=:"),//
 
     EQ(" = "),//
     IN(" in "),//
@@ -19,6 +20,7 @@ public enum SqlOption implements ISql {
     IS(" IS "),//
     NOT(" NOT "),//
     IS_NOT(" IS NOT"),//
+
 
     ;//
     final String sql;

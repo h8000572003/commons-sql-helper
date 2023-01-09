@@ -16,9 +16,6 @@ import java.util.stream.Collectors;
  */
 public class SelectBuilder implements ISqlBuilder, ISql {
 
-    public static final String SELECT = "SELECT ";
-    public static final String FROM = "FROM";
-    public static final String GROUP_BY = "GROUP BY";
     private List<ISql> orders = new ArrayList<>();//順序
 
 
@@ -30,13 +27,42 @@ public class SelectBuilder implements ISqlBuilder, ISql {
         return new SelectBuilder();
     }
 
+    /**
+     * 全部查詢
+     * @return
+     */
+    public SelectBuilder selectAll() {
+        return select(Selects.SELECT_ALL.toString());
+    }
+
+    /**
+     *
+     * @param sql 文字
+     * @return
+     */
     public SelectBuilder select(String sql) {
-        ISql select = SqlBuilder.write(SELECT + sql);
+        ISql select = SqlBuilder.write(SqlBuilder.write(Selects.SELECT) + sql);
         this.orders.add(select);
         return this;
 
     }
 
+    /**
+     * 客製化Select
+     * @param sql
+     * @return
+     */
+    public SelectBuilder select(ISql sql) {
+        ISql select = SqlBuilder.write(Selects.SELECT , sql);
+        this.orders.add(select);
+        return this;
+
+    }
+
+    /**
+     * 欄位建立
+     * @return
+     */
     public Select<SelectBuilder> createSelect() {
         final Select<SelectBuilder> select = new Select<>(this);
         this.orders.add(select);
@@ -74,13 +100,18 @@ public class SelectBuilder implements ISqlBuilder, ISql {
         return selectWhere;
     }
 
+    /**
+     * 額外加入
+     * @param append
+     * @return
+     */
     public SelectBuilder append(String append) {
         this.orders.add(SqlBuilder.write(append));
         return this;
     }
 
 
-    public SqlOrderBy orderBy() {
+    public SqlOrderBy createOrderBy() {
         final SqlOrderBy orderBy = new SqlOrderBy(this);
         this.orders.add(orderBy);
         return orderBy;
@@ -101,20 +132,18 @@ public class SelectBuilder implements ISqlBuilder, ISql {
     }
 
     public SqlJoin<SelectBuilder> createJoin() {
-
-
-        SqlJoin<SelectBuilder> sqlJoin = new SqlJoin<>(this);
+        final SqlJoin<SelectBuilder> sqlJoin = new SqlJoin<>(this);
         orders.add(sqlJoin);
         return sqlJoin;
     }
 
     public SelectBuilder groupBy(ISql iSql) {
-        orders.add(iSql);
+        orders.add(SqlBuilder.write(SqlBuilder.write(Selects.GROUP_BY),iSql));
         return this;
     }
 
     public SelectBuilder groupBy(String... fields) {
-        orders.add(SqlBuilder.write(SqlBuilder.write(" " + GROUP_BY + " "), SqlBuilder.comma(fields)));
+        orders.add(SqlBuilder.write(SqlBuilder.write(Selects.GROUP_BY), SqlBuilder.comma(fields)));
         return this;
     }
 }
