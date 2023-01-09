@@ -1,6 +1,5 @@
-SQL 文字輔助工具
-
-## 目的簡化撰寫Sql參數因複雜造成錯誤
+## SQL 文字輔助工具
+目的簡化撰寫Sql參數因複雜造成錯誤
 
 ### 變更紀錄
 
@@ -13,7 +12,9 @@ SQL 文字輔助工具
 
 select * from student where id in('Id1','Id2')
 
-ISql為sql單位，ISql內組合ISql，無限制包覆，以方便組合方式更加自由
+- ISql為sql單位，ISql內組合ISql，無限制包覆，以方便組合方式更加自由
+- 若使用createXXX表示在ISql內，若是要跳出則需要使用back()
+
 
 ```mermaid
 graph BT
