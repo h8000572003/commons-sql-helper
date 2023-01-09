@@ -31,6 +31,10 @@ public enum Selects implements ISql {
     RIGHT_CLAD(")"),
     COMMA(","),
     QUOTATION("'"),//
+
+    AS(" AS "),//
+
+    DOT("."),//
     ;
 
     final String sql;
