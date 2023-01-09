@@ -1,12 +1,6 @@
 ## SQL 文字輔助工具
+
 目的簡化撰寫Sql參數因複雜造成錯誤
-
-### 變更紀錄
-
-1.2023.01.06 基礎新增刪修建立
-2.2023.01.07 加入min max distinct
-3.0.0.5.1 2023.01.07 加入order by 與 where 條件
-4.group by加入客製化
 
 # 設計概念
 
@@ -15,10 +9,12 @@ select * from student where id in('Id1','Id2')
 - ISql為sql單位，ISql內組合ISql，無限制包覆，以方便組合方式更加自由
 - 若使用createXXX表示在ISql內，若是要跳出則需要使用back()
 
-
 ```mermaid
 graph BT
-    ISql -->|組合| ISql
+    Sql   -->|組合| Sql
+    Sql   -->|createXX| InSql
+    InSql -->|back| Sql
+   
 ```
 
 ```java
@@ -26,18 +22,16 @@ Isql in  => SqlBuilder.quotationAndComma("id","id2");//'id','id2'
 Isql cladIn=> SqlBuilder.clad(in);// ('id','id2')
 ```
 
-
-
 ### 常用元件
 
 - ISql:sql定義介面
 - SqlBuilder：產生括弧、逗點、單引號，等
 
-
-
 提供insert delete update select 四種方式
 
-### SELECT
+### 使用範例
+
+#### SELECT
 
 ```java
 
@@ -61,7 +55,7 @@ void test_select_cmd3() {
 
 ```
 
-### UPDATE
+#### UPDATE
 
 ```java
     void test_1() {
@@ -82,7 +76,7 @@ void test_select_cmd3() {
     }
 ```
 
-### DELETE
+#### DELETE
 
 ```java
     @Test
@@ -102,7 +96,7 @@ void test_select_cmd3() {
     }
 ```
 
-#### INSET
+#### INSERT
 
 ```java
     @Test
