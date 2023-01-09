@@ -8,16 +8,30 @@ SQL 文字輔助工具
 2.2023.01.07 加入min max distinct
 3.2023.01.07 加入order by 與 where 條件
 
+# 設計概念
+
+select * from student where id in('Id1','Id2')
+
+ISql為sql單位，ISql內組合ISql，無限制包覆，以方便組合方式更加自由
+
+```mermaid
+graph BT
+    ISql -->|組合| ISql
+```
+
+```java
+Isql in  => SqlBuilder.quotationAndComma("id","id2");//'id','id2'
+Isql cladIn=> SqlBuilder.clad(in);// ('id','id2')
+```
+
+
+
 ### 常用元件
 
 - ISql:sql定義介面
 - SqlBuilder：產生括弧、逗點、單引號，等
 
 
-```mermaid
-graph BT
-    ISql -->|組合| ISql
-```
 
 提供insert delete update select 四種方式
 
@@ -95,7 +109,7 @@ void test_select_cmd3() {
                 .add("ID", "'B1234'")
                 .add("NAME", "'大寶'")
                 .build().toUpperCase();
-    
+  
         String ans = "INSERT INTO STUDENT(ID,NAME) VALUES ('B1234','大寶')";
 
         log.info("sql:{}", sql);

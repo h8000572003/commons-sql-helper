@@ -14,7 +14,9 @@ public enum Selects implements ISql {
 
     ORDER_BY(" Order by "),//
 
+    NULL(" NULL "),//
 
+    ORACLE_JOIN(" (+) "),//
 
     ;
 

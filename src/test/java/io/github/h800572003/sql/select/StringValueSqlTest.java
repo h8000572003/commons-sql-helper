@@ -90,4 +90,6 @@ class StringValueSqlTest {
         log.info("value:{}", value);
         Assertions.assertEquals("('ABC','CDE')", value);
     }
+
+
 }

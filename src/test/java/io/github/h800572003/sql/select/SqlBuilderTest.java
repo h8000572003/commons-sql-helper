@@ -1,5 +1,7 @@
 package io.github.h800572003.sql.select;
 
+import io.github.h800572003.sql.ISql;
+import io.github.h800572003.sql.Selects;
 import io.github.h800572003.sql.SqlBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -241,6 +243,38 @@ class SqlBuilderTest {
 
         final String ans = "select id,name from student";
 
+        Assertions.assertEquals(sql, ans.toUpperCase());
+    }
+
+    /**
+     * 測試is null
+     */
+    @Test
+    void testSqlIsNotNull() {
+
+        String sql = SelectBuilder.newSelect()
+                .select("*")
+                .from("student")
+                .where(SqlBuilder.getParameter("id",SqlOption.IS_NOT, Selects.NULL))
+                .build().toUpperCase();
+
+
+        String ans = "select * from student where id is not null ";
+        log.info("sql:{}", sql);
+        Assertions.assertEquals(sql, ans.toUpperCase());
+    }
+    @Test
+    void testSqlIsNull() {
+
+        String sql = SelectBuilder.newSelect()
+                .select("*")
+                .from("student")
+                .where(SqlBuilder.getParameter("id",SqlOption.IS, Selects.NULL))
+                .build().toUpperCase();
+
+
+        String ans = "select * from student where id is  null ";
+        log.info("sql:{}", sql);
         Assertions.assertEquals(sql, ans.toUpperCase());
     }
 }

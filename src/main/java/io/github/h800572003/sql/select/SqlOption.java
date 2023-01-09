@@ -9,14 +9,19 @@ public enum SqlOption implements ISql {
     GE(" >= "),//
     LE(" <= "),//
     NE(" != "),//
+    LT(" < "),//
+    GT(" > "),//
+
     EQ(" = "),//
     IN(" in "),//
     NOT_IN(" not in "),//
-    BETWEEN(" between ");
+    BETWEEN(" between "),//
+    IS(" IS "),//
+    NOT(" NOT "),//
+    IS_NOT(" IS NOT"),//
 
+    ;//
     final String sql;
-
-
 
 
     SqlOption(String sql) {

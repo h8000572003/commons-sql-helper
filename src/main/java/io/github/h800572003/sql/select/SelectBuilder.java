@@ -91,6 +91,7 @@ public class SelectBuilder implements ISqlBuilder, ISql {
     public String build() {
         return orders.stream()
                 .map(Objects::toString)
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining());
     }
 
