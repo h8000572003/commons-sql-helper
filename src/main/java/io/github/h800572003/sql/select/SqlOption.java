@@ -19,7 +19,9 @@ public enum SqlOption implements ISql {
     BETWEEN(" between "),//
     IS(" IS "),//
     NOT(" NOT "),//
-    IS_NOT(" IS NOT"),//
+    IS_NOT(" IS NOT "),//
+
+    LIKE(" LIKE "),//
 
 
     ;//

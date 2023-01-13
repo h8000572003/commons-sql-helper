@@ -4,8 +4,10 @@ import io.github.h800572003.sql.ISql;
 import io.github.h800572003.sql.ISqlBack;
 import io.github.h800572003.sql.ISqlBuilder;
 import io.github.h800572003.sql.SqlBuilder;
+import org.junit.platform.commons.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ public class SqlAndOrCondition<T extends ISqlBuilder> implements ISql, ISqlBack<
     private final List<ISql> sqlList = new ArrayList<>();
 
     private final OnWhere onWhere;
+
+
 
     public SqlAndOrCondition(T build, OnWhere onWhere, ISql sql) {
         this.onWhere = onWhere;
@@ -45,10 +49,14 @@ public class SqlAndOrCondition<T extends ISqlBuilder> implements ISql, ISqlBack<
     }
 
     public SqlAndOrCondition<T> orAnd(SqlAndOr andOr, ISql sql, BooleanSupplier condition) {
-        if (condition.getAsBoolean()) {
-            sqlList.add(SqlBuilder.write(andOr, sql));
-        }
 
+        if (condition.getAsBoolean()) {
+            if (sqlList.isEmpty()) {
+                this.sqlList.add(SqlBuilder.write(sql));
+            } else {
+                this.sqlList.add(SqlBuilder.write(andOr, sql));
+            }
+        }
         return this;
     }
 

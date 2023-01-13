@@ -1,6 +1,7 @@
 package io.github.h800572003.sql.select;
 
 import io.github.h800572003.sql.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,47 @@ public class Select<T extends ISqlBuilder> implements ISql, ISqlBack<T> {
         this.builder = builder;
     }
 
+    /**
+     * 一次加入
+     *
+     * @param sqls
+     * @return
+     */
+    public Select<T> addAll(String... sqls) {
+        for (String sql : sqls) {
+            add(sql);
+        }
+        return this;
+    }
+
+
+
     public Select<T> add(ISql sql) {
         this.sqls.add(sql);
         return this;
     }
 
+    /**
+     * 單一欄位
+     *
+     * @param sql
+     * @return
+     */
     public Select<T> add(String sql) {
         this.add(SqlBuilder.write(sql));
+        return this;
+    }
+
+
+    /**
+     * 攜帶別名
+     *
+     * @param sql
+     * @param asName
+     * @return
+     */
+    public Select<T> add(String sql, String asName) {
+        this.add(SqlBuilder.write(sql, StringUtils.SPACE, asName));
         return this;
     }
 

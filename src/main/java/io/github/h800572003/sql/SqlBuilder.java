@@ -1,5 +1,7 @@
 package io.github.h800572003.sql;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,6 +12,19 @@ public class SqlBuilder implements ISql {
     public static final String COMMA = Selects.COMMA.toString();
     public static final String QUOTATION = Selects.QUOTATION.toString();
     private final String sql;
+
+    public static ISql union(ISql sql1, ISql sql2) {
+        return SqlBuilder.write(sql1, Selects.UNION, sql2);
+    }
+
+    public static ISql unionAll(ISql sql1, ISql sql2) {
+        return SqlBuilder.write(sql1, Selects.UNION_ALL, sql2);
+    }
+
+    public static ISql toChar(String sql) {
+        return SqlBuilder.write(write("TO_CHAR") , SqlBuilder.clad(sql));
+
+    }
 
     public static class StringValueSqlHolder {
 
@@ -83,6 +98,7 @@ public class SqlBuilder implements ISql {
                 .collect(Collectors.joining()));//
     }
 
+
     public static ISql write(ISql... sqls) {
         return write(Stream//
                 .of(sqls)//
@@ -143,14 +159,17 @@ public class SqlBuilder implements ISql {
                 .map(Objects::toString)//
                 .collect(Collectors.joining(COMMA)));//
     }
-    public static ISql max(String value){
-        return write(Selects.MAX,SqlBuilder.write(LC,value, RC));
+
+    public static ISql max(String value) {
+        return write(Selects.MAX, SqlBuilder.write(LC, value, RC));
     }
-    public static ISql distinct(String value){
-        return write(Selects.DISTINCT,SqlBuilder.write(value));
+
+    public static ISql distinct(String value) {
+        return write(Selects.DISTINCT, SqlBuilder.write(value));
     }
-    public static ISql min(String value){
-        return write(Selects.MIN,SqlBuilder.write(LC,value, RC));
+
+    public static ISql min(String value) {
+        return write(Selects.MIN, SqlBuilder.write(LC, value, RC));
     }
 
 
@@ -192,8 +211,12 @@ public class SqlBuilder implements ISql {
                 .collect(Collectors.joining(COMMA)));//
     }
 
-    public static ValueParameter getParameter(String field, ISql operation, ISql value){
-        return new ValueParameter(field,operation,value);
+    public static ValueParameter getParameter(String field, ISql operation, ISql value) {
+        return new ValueParameter(field, operation, value);
+    }
+
+    public static ValueParameter getParameter(String field, String asName, ISql operation, ISql value) {
+        return new ValueParameter(field + StringUtils.SPACE + asName, operation, value);
     }
 
 

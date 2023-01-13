@@ -80,24 +80,45 @@ public class SelectBuilder implements ISqlBuilder, ISql {
         return this;
     }
 
-    public SqlAndOrCondition<SelectBuilder> where(SqlBuilder.ValueParameter sqlWhere) {
-        return this.where(sqlWhere, () -> true);
+    public SqlAndOrCondition<SelectBuilder> createWhere(SqlBuilder.ValueParameter sqlWhere) {
+        return this.createWhere(sqlWhere, () -> true);
     }
 
-    public SqlAndOrCondition<SelectBuilder> where(SqlBuilder.ValueParameter sqlWhere, BooleanSupplier condition) {
+    public SqlAndOrCondition<SelectBuilder> createWhere(SqlBuilder.ValueParameter sqlWhere, BooleanSupplier condition) {
         SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, condition.getAsBoolean() ? sqlWhere : null);
         this.orders.add(selectWhere);
         return selectWhere;
     }
 
-    public SqlAndOrCondition<SelectBuilder> where(ISql iSql) {
-        return where(iSql, () -> true);
+    public SqlAndOrCondition<SelectBuilder> createWhere(ISql iSql) {
+        return createWhere(iSql, () -> true);
     }
 
-    public SqlAndOrCondition<SelectBuilder> where(ISql iSql, BooleanSupplier condition) {
+
+
+    public SqlAndOrCondition<SelectBuilder> createWhere(ISql iSql, BooleanSupplier condition) {
         SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, condition.getAsBoolean() ? iSql : null);
         this.orders.add(selectWhere);
         return selectWhere;
+    }
+
+    public SelectBuilder whereAllAnd(ISql...sqls){
+        SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, null);
+        for(ISql sql:sqls){
+            selectWhere.and(sql);
+
+        }
+        this.orders.add(selectWhere);
+        return this;
+    }
+    public SelectBuilder whereAllOr(ISql...sqls){
+        SqlAndOrCondition<SelectBuilder> selectWhere = new SqlAndOrCondition<>(this, OnWhere.WHERE, null);
+        for(ISql sql:sqls){
+            selectWhere.or(sql);
+
+        }
+        this.orders.add(selectWhere);
+        return this;
     }
 
     /**
