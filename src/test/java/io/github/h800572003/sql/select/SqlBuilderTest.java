@@ -3,7 +3,6 @@ package io.github.h800572003.sql.select;
 import io.github.h800572003.sql.*;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static io.github.h800572003.sql.SqlBuilder.*;
@@ -314,7 +313,7 @@ class SqlBuilderTest {
         String ans = "select * from student where id is not null ";
         log.info("sql:{}", sql);
 
-        assertTrue(SqlEqual.isEqual(ans,sql));
+        assertTrue(SqlEqualUtils.isEqual(ans,sql));
     }
     @Test
     void testSqlIsNull() {
@@ -368,7 +367,7 @@ class SqlBuilderTest {
 
         final String ans="select id,name from student where id is  null and name is not null";
 
-        assertTrue(SqlEqual.isEqual(ans,sql));
+        assertTrue(SqlEqualUtils.isEqual(ans,sql));
 
 
 
@@ -390,7 +389,7 @@ class SqlBuilderTest {
 
         final String ans="select id,name from student where id is  null or name is not null";
 
-        assertTrue(SqlEqual.isEqual(ans,sql));
+        assertTrue(SqlEqualUtils.isEqual(ans,sql));
 
 
 
@@ -411,7 +410,7 @@ class SqlBuilderTest {
 
         final String all="select id,name from student where id1 =? and) id2 = ? and id3 = ? and id4 = ? ";
         final String ans="select id,name from student where  id2 = ?  and id4 = ? ";
-        assertTrue(SqlEqual.isEqual(ans,sql));
+        assertTrue(SqlEqualUtils.isEqual(ans,sql));
 
     }
     @Test
@@ -429,7 +428,7 @@ class SqlBuilderTest {
 
 
         final String ans="select id,name from student where  id2 = ?  and id3 = ? or id4 = ? ";
-        assertTrue(SqlEqual.isEqual(ans,sql));
+        assertTrue(SqlEqualUtils.isEqual(ans,sql));
 
     }
 }

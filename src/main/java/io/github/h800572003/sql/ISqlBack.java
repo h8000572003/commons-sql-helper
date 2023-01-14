@@ -1,7 +1,7 @@
 package io.github.h800572003.sql;
 
 /**
- * 跳回Builder
+ * 有返回sql
  * @param <T>
  */
 public interface ISqlBack<T extends ISqlBuilder> {

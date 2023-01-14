@@ -1,5 +1,6 @@
 package io.github.h800572003.sql;
 
+import io.github.h800572003.sql.select.SelectBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -13,6 +14,10 @@ public class SqlBuilder implements ISql {
     public static final String QUOTATION = Selects.QUOTATION.toString();
     private final String sql;
 
+    public static ISql union(ISqlBack<SelectBuilder> sqlBack1, ISqlBack<SelectBuilder> sqlBack2) {
+        return SqlBuilder.write(sqlBack1.back(), Selects.UNION, sqlBack2.back());
+    }
+
     public static ISql union(ISql sql1, ISql sql2) {
         return SqlBuilder.write(sql1, Selects.UNION, sql2);
     }
@@ -21,8 +26,13 @@ public class SqlBuilder implements ISql {
         return SqlBuilder.write(sql1, Selects.UNION_ALL, sql2);
     }
 
+
+    public static ISql unionAll(ISqlBack<SelectBuilder> sqlBack1, ISqlBack<SelectBuilder> sqlBack2) {
+        return SqlBuilder.write(sqlBack1.back(), Selects.UNION_ALL, sqlBack2.back());
+    }
+
     public static ISql toChar(String sql) {
-        return SqlBuilder.write(write("TO_CHAR") , SqlBuilder.clad(sql));
+        return SqlBuilder.write(write("TO_CHAR"), SqlBuilder.clad(sql));
 
     }
 
@@ -158,6 +168,12 @@ public class SqlBuilder implements ISql {
                 .of(sqls)//
                 .map(Objects::toString)//
                 .collect(Collectors.joining(COMMA)));//
+    }
+    public static ISql count(String value) {
+        return write(Selects.COUNT,clad(value));//
+    }
+    public static ISql count(ISql sql) {
+        return write(Selects.COUNT,clad(sql));//
     }
 
     public static ISql max(String value) {

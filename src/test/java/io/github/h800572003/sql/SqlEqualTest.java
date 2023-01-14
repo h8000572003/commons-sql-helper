@@ -7,7 +7,11 @@ public class SqlEqualTest {
 
 
     @Test
-    void test(){
-        Assertions.assertTrue(  SqlEqual.isEqual("select * from    student","SELECT * from student"));
+    void test() {
+        Assertions.assertTrue(
+                SqlEqualUtils.isEqual(
+                        "select * from    student",//
+                        "SELECT * from student"//
+                ));
     }
 }

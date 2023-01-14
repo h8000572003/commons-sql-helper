@@ -115,3 +115,12 @@ void test_select_cmd3() {
 ```
 
 
+
+SqlEqual 是否相同sql
+
+```java
+  @Test
+    void test(){
+        Assertions.assertTrue(  SqlEqual.isEqual("select * from    student","SELECT * from student"));
+    }
+```

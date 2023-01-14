@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 public enum Selects implements ISql {
     MAX("MAX "),
     MIN("MIN"),
-    COUNT("COUNT "),
+    COUNT0("COUNT(0)"),
+    COUNT("COUNT"),
     DISTINCT("DISTINCT "),
 
     FROM(" FROM "),
