@@ -16,18 +16,21 @@ public class ISqlGenerator {
 
 
     private final SqlRoleMap map = new SqlRoleMap();
-    private final IStringSqlMapper stringSqlMapper=new StringSqlMapper();
+    private final IStringSqlMapper stringSqlMapper = new StringSqlMapper();
 
 
     public String export(String name, String sql) {
-        String newSql = appendEnd(sql);
+        sql = sql.replaceAll("\n", StringUtils.EMPTY);
+        sql = sql.replaceAll("\r", StringUtils.EMPTY);
+        sql = appendEnd(sql);
+
         IGenerateContext generateContext = new GenerateContext(name);
-        List<GenerateWord> collect = stringSqlMapper.mapper(newSql);
-        List<String>outPuts=new ArrayList<>();
-        collect.forEach(i-> {
+        List<GenerateWord> collect = stringSqlMapper.mapper(sql);
+        List<String> outPuts = new ArrayList<>();
+        collect.forEach(i -> {
             generateContext.setWord(i);
             String generate = map.findKeyWord(i).generate(generateContext);
-            if(StringUtils.isNotBlank(generate)){
+            if (StringUtils.isNotBlank(generate)) {
                 outPuts.add(generate);
             }
 
@@ -38,6 +41,7 @@ public class ISqlGenerator {
 
     /**
      * 加入結尾符號
+     *
      * @param sql
      * @return
      */

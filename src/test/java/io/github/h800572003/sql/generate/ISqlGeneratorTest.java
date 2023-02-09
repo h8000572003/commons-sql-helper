@@ -23,9 +23,10 @@ class ISqlGeneratorTest {
         log.info("code:{}", code);
 
         Assertions.assertTrue(code.contains("ISql sql = SqlBuilder.body().add(\" select \").add(\" c1,c2,c3 \").add(\" from \").add(\" table \");"));
-        StringSqlGeneratorPrint.print("select * from c1,c2");
+
 
     }
+
 
     @Test
     void exportWithWhere() {
@@ -39,6 +40,10 @@ class ISqlGeneratorTest {
 
 
 
+    }
+    @Test
+    void test(){
+        StringSqlGeneratorPrint.print("select * from c1,c2 where a='b' \n \t \r and d =: d");
     }
 
     public static void main(String[] args) {

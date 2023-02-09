@@ -55,8 +55,8 @@ public class StringSqlMapper implements IStringSqlMapper {
     public List<GenerateWord> mapper(String stringSql) {
         final List<GenerateWord> generateWords = new ArrayList<>();
         this.mapper(stringSql, generateWords);
-        return generateWords;
-
+        return  generateWords.stream().filter(i->StringUtils.isNotBlank(i.getKey()))
+                .collect(Collectors.toList());
     }
 
     private void mapper(String sql, List<GenerateWord> generateWords) {
