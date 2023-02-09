@@ -76,8 +76,8 @@ class SqlBuilderTest {
     void test_select_cmd4() {
 
         String sql = SelectBuilder.newSelect().createSelect()
-                .add("value1")
-                .add("value2")
+                .body("value1")
+                .body("value2")
                 .back()
                 .from("XXX")
                 .createWhere(getParameter("value1", SqlOption.EQ, write(":value1")))
@@ -97,8 +97,8 @@ class SqlBuilderTest {
     void test_select_cmd5() {
 
         String sql = SelectBuilder.newSelect().createSelect()
-                .add("value1")
-                .add("value2")
+                .body("value1")
+                .body("value2")
                 .back()
                 .from("XXX")
                 .createWhere(getParameter("value1", SqlOption.EQ, write(":value1")))
@@ -221,8 +221,8 @@ class SqlBuilderTest {
     void testCreatSelect() {
         String sql = SelectBuilder.newSelect()
                 .createSelect()
-                .add("id")
-                .add("name")
+                .body("id")
+                .body("name")
                 .back()
                 .from(write("student"))
                 .build().toUpperCase();
@@ -240,8 +240,8 @@ class SqlBuilderTest {
     void testCreatSelectOptionNoShow() {
         String sql = SelectBuilder.newSelect()
                 .createSelect()
-                .add("id")
-                .add("name")
+                .body("id")
+                .body("name")
                 .back()
                 .from(write("student"))
                 .createWhere(getParameter("id",SqlOption.EQ,quotation("abc")),()->false)
@@ -263,8 +263,8 @@ class SqlBuilderTest {
 
         String sql = SelectBuilder.newSelect()
                 .createSelect()
-                .add("id")
-                .add("name")
+                .body("id")
+                .body("name")
                 .back()
                 .from(write("student"))
                 .createWhere(getParameter("id",SqlOption.EQ,quotation("idA")),()->true)
@@ -282,8 +282,8 @@ class SqlBuilderTest {
     void testCreatSelectWithoutWhere() {
         String sql = SelectBuilder.newSelect()
                 .createSelect()
-                .add("id")
-                .add("name")
+                .body("id")
+                .body("name")
                 .back()
                 .from(write("student"))
                 .createWhere(getParameter("id",SqlOption.EQ,quotation("idA")),()->false)

@@ -27,7 +27,7 @@ public class Select<T extends ISqlBuilder> implements ISql, ISqlBack<T> {
      */
     public Select<T> addAll(String... sqls) {
         for (String sql : sqls) {
-            add(sql);
+            body(sql);
         }
         return this;
     }
@@ -45,7 +45,7 @@ public class Select<T extends ISqlBuilder> implements ISql, ISqlBack<T> {
      * @param sql
      * @return
      */
-    public Select<T> add(String sql) {
+    public Select<T> body(String sql) {
         this.add(SqlBuilder.write(sql));
         return this;
     }

@@ -10,7 +10,7 @@ public class SqlEqualTest {
     void test() {
         Assertions.assertTrue(
                 SqlEqualUtils.isEqual(
-                        "select * from    student",//
+                        "select * from student",//
                         "SELECT * from student"//
                 ));
     }

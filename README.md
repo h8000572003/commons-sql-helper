@@ -124,3 +124,11 @@ SqlEqual 是否相同sql
         Assertions.assertTrue(  SqlEqual.isEqual("select * from    student","SELECT * from student"));
     }
 ```
+StringSqlGeneratorPrint 顯示簡單ISQL
+
+```java
+
+StringSqlGeneratorPrint.print("select * from c1,c2");
+
+```
+

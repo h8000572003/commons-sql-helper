@@ -14,7 +14,7 @@
 
     <groupId>io.github.h8000572003</groupId>
     <artifactId>commons-sql-helper</artifactId>
-    <version>0.0.6.3</version>
+    <version>0.0.6.4</version>
     <properties>
         <log4j2.version>2.17.1</log4j2.version>
         <java.version>1.8</java.version>
@@ -24,6 +24,12 @@
         <mockito-all.version>1.10.19</mockito-all.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.helger</groupId>
+            <artifactId>jcodemodel</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.commons</groupId>

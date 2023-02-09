@@ -36,6 +36,7 @@ public class SqlBuilder implements ISql {
 
     }
 
+
     public static class StringValueSqlHolder {
 
         private boolean isComma = false;//是否逗號
@@ -135,6 +136,11 @@ public class SqlBuilder implements ISql {
                 .collect(Collectors.joining(COMMA)) + RC);//
     }
 
+    public static ISqlBody body() {
+        return new SqlBody();
+    }
+
+
     public static ISql commaClad(ISql... value) {
         return write(LC + Stream//
                 .of(value)//
@@ -169,11 +175,13 @@ public class SqlBuilder implements ISql {
                 .map(Objects::toString)//
                 .collect(Collectors.joining(COMMA)));//
     }
+
     public static ISql count(String value) {
-        return write(Selects.COUNT,clad(value));//
+        return write(Selects.COUNT, clad(value));//
     }
+
     public static ISql count(ISql sql) {
-        return write(Selects.COUNT,clad(sql));//
+        return write(Selects.COUNT, clad(sql));//
     }
 
     public static ISql max(String value) {
@@ -259,6 +267,7 @@ public class SqlBuilder implements ISql {
         public String toString() {
             return sql.toString();
         }
+
 
 
     }

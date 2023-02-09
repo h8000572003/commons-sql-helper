@@ -131,7 +131,7 @@ class StringValueSqlTest {
         ISql sql2 = SqlBuilder.unionAll(sql, sql1);
         log.info("value:{}", sql2);
 
-        String ans="select id from student where id = ?  union all select id from student where id = ?";
+        String ans="select id from student where id = ?  UNION all select id from student where id = ?";
 
         Assertions.assertTrue(SqlEqualUtils.isEqual(sql2,ans));
     }
@@ -171,5 +171,15 @@ class StringValueSqlTest {
     void test_count(){
         ISql count = SqlBuilder.count("A");
         assertTrue(SqlEqualUtils.isEqual(count,"count(A)"));
+    }
+    @Test
+    void test_sql_add(){
+        ISql select = SqlBuilder.body()
+                .add("select")
+                .add(" *    ")
+                .add(" from  ")
+                .add(" table ");
+        assertTrue(SqlEqualUtils.isEqual("select * from table ",select.toString()));
+
     }
 }
