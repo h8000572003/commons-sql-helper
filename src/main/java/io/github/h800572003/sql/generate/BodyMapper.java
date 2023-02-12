@@ -4,7 +4,9 @@ import com.helger.jcodemodel.*;
 import com.helger.jcodemodel.writer.JCMWriter;
 import com.helger.jcodemodel.writer.OutputStreamCodeWriter;
 import io.github.h800572003.sql.ISql;
+import io.github.h800572003.sql.Selects;
 import io.github.h800572003.sql.SqlBuilder;
+import io.github.h800572003.sql.select.SqlOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,11 +25,13 @@ public class BodyMapper implements IGenerateType {
         public void write(int b) throws IOException {
             this.string.append((char) b);
         }
+
         public String toString() {
             return this.string.toString();
         }
     }
-    private  StringOutputStream outputStream=new StringOutputStream();
+
+    private StringOutputStream outputStream = new StringOutputStream();
 
 
     public BodyMapper(SqlRoleMap sqlRoleMap) {
@@ -47,8 +51,20 @@ public class BodyMapper implements IGenerateType {
         if (!word1.getKey().equalsIgnoreCase(";")) {
             final String key = word1.getKey();
             log.info("key:{}", key);
-            JInvocation add = jInvocation.invoke("add").arg(StringUtils.SPACE+word1.getKey()+StringUtils.SPACE);
-            context.put(MapperCodes.INVOKE, add);
+            if (isIncludeSelect(word1.getKey())) {
+                AbstractJClass ref = context.getModel().ref(Selects.class);
+                JInvocation add = jInvocation.invoke("addSpace").arg(ref.enumConstantRef(word1.getKey().toUpperCase()).invoke("name"));
+                context.put(MapperCodes.INVOKE, add);
+            } else if (isIncludeOption(word1.getKey())) {
+                AbstractJClass ref = context.getModel().ref(SqlOption.class);
+                JInvocation add = jInvocation.invoke("addSpace").arg(ref.enumConstantRef(word1.getKey().toUpperCase()).invoke("name"));
+                context.put(MapperCodes.INVOKE, add);
+            } else {
+                JInvocation add = jInvocation.invoke("addSpace").arg(word1.getKey());
+                context.put(MapperCodes.INVOKE, add);
+            }
+
+
         } else {
             return getString(context, jInvocation);
         }
@@ -56,10 +72,31 @@ public class BodyMapper implements IGenerateType {
 
     }
 
+
+    private boolean isIncludeSelect(String value) {
+        try {
+            Selects.valueOf(value.toUpperCase());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    private boolean isIncludeOption(String value) {
+        try {
+            SqlOption.valueOf(value.toUpperCase());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
     private String getString(IGenerateContext context, JInvocation jInvocation) {
         JCodeModel model = context.getModel();
         JBlock jBlock = context.get(MapperCodes.BODY, JBlock.class);
-        jBlock.decl(model._ref(ISql.class),"sql",jInvocation);
+        jBlock.decl(model._ref(ISql.class), "sql", jInvocation);
 
         final JCMWriter jcmWriter = new JCMWriter(context.getModel());
         try {
@@ -79,12 +116,6 @@ public class BodyMapper implements IGenerateType {
 
     }
 
-    public void sql() {
-        SqlBuilder.body().add("select")
-                .add("c1,c2,c3")//
-                .add("from")
-                .add("table");
-    }
 
     private JInvocation initVar(IGenerateContext context) {
         try {

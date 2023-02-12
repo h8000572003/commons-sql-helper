@@ -7,5 +7,6 @@ public interface ISqlBody extends ISql{
      * @param sql
      * @return
      */
+    ISqlBody addSpace(String sql);
     ISqlBody add(String sql);
 }

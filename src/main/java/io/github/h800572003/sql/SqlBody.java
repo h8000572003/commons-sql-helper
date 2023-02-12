@@ -1,5 +1,7 @@
 package io.github.h800572003.sql;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class SqlBody implements ISqlBody {
     private ISql sql;
 
@@ -12,6 +14,11 @@ public class SqlBody implements ISqlBody {
     }
     public SqlBody(String...sql) {
         this.sql = SqlBuilder.write(sql);
+    }
+
+    @Override
+    public ISqlBody addSpace(String sql) {
+        return new SqlBody(this.sql,SqlBuilder.write(StringUtils.SPACE), SqlBuilder.write(sql));
     }
 
     @Override

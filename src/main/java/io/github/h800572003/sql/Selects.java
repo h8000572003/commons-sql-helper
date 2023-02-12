@@ -12,9 +12,15 @@ public enum Selects implements ISql {
     COUNT("COUNT"),
     DISTINCT("DISTINCT "),
 
+
+    WHERE(" WHERE "),//
     FROM(" FROM "),
 
     ASC(" ASC "),//
+
+    AND(" AND "),
+
+    OR(" OR "),
 
     DESC(" DESC "),//
 
