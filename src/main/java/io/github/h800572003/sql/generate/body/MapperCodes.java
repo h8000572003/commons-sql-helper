@@ -12,7 +12,9 @@ public enum MapperCodes {
     INNER_FROM,
 
     INNER_WHERE,
-    INNER_WHERE_STATUS;
+    INNER_WHERE_STATUS,
+
+    ;
 
     public enum Status {
         SELECT_NEW, NONE,//新建

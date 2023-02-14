@@ -3,6 +3,7 @@ package io.github.h800572003.sql.generate.body;
 import com.helger.jcodemodel.JCodeModel;
 import com.helger.jcodemodel.JInvocation;
 import io.github.h800572003.sql.SqlBuilder;
+import io.github.h800572003.sql.generate.GenerateWord;
 import io.github.h800572003.sql.generate.IGenerateContext;
 import io.github.h800572003.sql.select.SelectBuilder;
 
@@ -21,6 +22,9 @@ public class AddBodyWriteCode implements ICodeWrite {
     public static final String UNION = "UNION";
     private static final String CREATE_SELECT = "createSelect";
     private static final String INNER_FROM = "innerFrom";//
+    public static final String END = ";";
+    public static final String GROUP = "GROUP";
+    public static final String ORDER = "ORDER";
 
 
     private Map<String, StatusListener> statusForwardListeners = new HashMap<>();
@@ -31,6 +35,7 @@ public class AddBodyWriteCode implements ICodeWrite {
         this.addForwardStatus(SELECT, new SelectStatusListener());
         this.addForwardStatus(FROM, new FromStatusListener());
         this.addForwardStatus(WHERE, new WhereStatusListener());
+        this.addForwardStatus(ORDER, new OrderStatusListener());
 
         //逆向
         this.addReverseStatus(SELECT, new SelectReverseStatusListener());
@@ -75,36 +80,85 @@ public class AddBodyWriteCode implements ICodeWrite {
         }
         String status = context.get(MapperCodes.STATUS, String.class);
         if (StringUtils.equalsIgnoreCase(status, SELECT)) {
-            if (value.toUpperCase().matches("(SELECT)")) {
-                addSelectNew(context);
-            } else {
-                adddSelectAdd(value, context);
-            }
-
+            addSelect(value, context);
         } else if (StringUtils.equalsIgnoreCase(status, FROM)) {
-            if (value.toUpperCase().matches("(FROM)")) {
-
-            } else {
-                addFromValue(value, context);
-            }
+            addFrom(value, context);
         } else if (StringUtils.equalsIgnoreCase(status, WHERE)) {
-            addWhereValue(value, context);
-        } else if (StringUtils.equalsIgnoreCase(value, ";")) {
-//      not do
-            end(context);
+            addWhere(value, context);
+        } else if (StringUtils.equalsIgnoreCase(status, END)) {
+            anddEnd(context);
+        } else if (StringUtils.equalsIgnoreCase(status, ORDER)) {
+            addOrder(value, context);
+        } else if (StringUtils.equalsIgnoreCase(status, GROUP)) {
+            addGROUP(value, context);
         } else {
-            addSpace(value, context);
+            addOther(value, context);
         }
         return StringUtils.EMPTY;
     }
 
-    private void addSpace(String value, IGenerateContext context) {
+    private void addGROUP(String value, IGenerateContext context) {
+        JInvocation jInvocation = context.get(MapperCodes.INNER_SELECT, JInvocation.class);
+        if (StringUtils.equalsIgnoreCase(value.toUpperCase(), GROUP)) {
+            context.put(MapperCodes.INNER_SELECT, jInvocation.invoke("groupBy"));
+        } else if (StringUtils.equalsIgnoreCase(value.toUpperCase(), "BY")) {
+
+        } else {
+            String[] values = value.split(",");
+            for (String v : values) {
+                JCodeModel model = context.getModel();
+                jInvocation = jInvocation.arg(v.trim());
+            }
+            context.put(MapperCodes.INNER_SELECT, jInvocation);
+        }
+    }
+
+    private void addOrder(String value, IGenerateContext context) {
+        GenerateWord word = context.getWord();
+
+        JInvocation jInvocation = context.get(MapperCodes.INNER_SELECT, JInvocation.class);
+        if (StringUtils.equalsIgnoreCase(value.toUpperCase(), ORDER)) {
+            context.put(MapperCodes.INNER_SELECT, jInvocation.invoke("createOrderBy"));
+        } else if (StringUtils.equalsIgnoreCase(value.toUpperCase(), "BY")) {
+            //not do
+        } else if (StringUtils.equalsIgnoreCase(value.toUpperCase(), "DESC")) {
+            context.put(MapperCodes.INNER_SELECT, jInvocation.invoke("isDesc"));
+        } else if (StringUtils.equalsIgnoreCase(value.toUpperCase(), "ASC")) {
+            //not do
+        } else {
+            String[] values = value.split(",");
+            for (String v : values) {
+                JCodeModel model = context.getModel();
+                JInvocation write = model.ref(SqlBuilder.class).staticInvoke("write").arg(v.trim());
+                jInvocation = jInvocation.invoke("add").arg(write);
+            }
+            context.put(MapperCodes.INNER_SELECT,jInvocation);
+
+        }
+    }
+
+    private static void addSelect(String value, IGenerateContext context) {
+        if (value.toUpperCase().matches("(SELECT)")) {
+            addSelectNew(context);
+        } else {
+            adddSelectAdd(value, context);
+        }
+    }
+
+    private static void addFrom(String value, IGenerateContext context) {
+        if (value.toUpperCase().matches("(FROM)")) {
+        } else {
+            addFromValue(value, context);
+        }
+    }
+
+    private void addOther(String value, IGenerateContext context) {
         JInvocation innerSelect = context.get(MapperCodes.INNER_SELECT, JInvocation.class);//
 
         context.put(MapperCodes.INNER_SELECT, innerSelect.invoke("appendWithSpace").arg(value));//
     }
 
-    private static void end(IGenerateContext context) {
+    private static void anddEnd(IGenerateContext context) {
         JInvocation innerSelect = context.get(MapperCodes.INNER_SELECT, JInvocation.class);//
         JInvocation invocation = context.get(MapperCodes.INVOKE, JInvocation.class);//
         if (innerSelect != null) {
@@ -119,7 +173,7 @@ public class AddBodyWriteCode implements ICodeWrite {
         OR,//OR
     }
 
-    private static void addWhereValue(String value, IGenerateContext context) {
+    private static void addWhere(String value, IGenerateContext context) {
 
         JCodeModel model = context.getModel();
         JInvocation selectInvoke = context.get(MapperCodes.INNER_SELECT, JInvocation.class);
@@ -169,7 +223,11 @@ public class AddBodyWriteCode implements ICodeWrite {
 
     private static void adddSelectAdd(String value, IGenerateContext context) {
         JInvocation selectInvoke = context.get(MapperCodes.INNER_SELECT, JInvocation.class);//
-        context.put(MapperCodes.INNER_SELECT, selectInvoke.invoke("add").arg(value));//
+        final String[] values = value.split(",");
+        for (String v : values) {
+            selectInvoke = selectInvoke.invoke("add").arg(v.trim());
+        }
+        context.put(MapperCodes.INNER_SELECT, selectInvoke);//
 
     }
 
@@ -231,7 +289,7 @@ public class AddBodyWriteCode implements ICodeWrite {
                 JInvocation invocation = context.get(MapperCodes.INVOKE, JInvocation.class);//
                 if (innerSelect != null) {
                     context.put(MapperCodes.INVOKE, invocation.invoke("addWithSpace").arg(innerSelect));//
-                    context.put(MapperCodes.INNER_SELECT,null);
+                    context.put(MapperCodes.INNER_SELECT, null);
                 }
 
             }
@@ -239,4 +297,13 @@ public class AddBodyWriteCode implements ICodeWrite {
     }
 
 
+    private class OrderStatusListener implements StatusListener {
+        @Override
+        public void update(String oldStatus, String newStatus, IGenerateContext context) {
+//            JInvocation inner = context.get(MapperCodes.INNER_ORDER, JInvocation.class);//
+            JInvocation selectInvoke = context.get(MapperCodes.INNER_SELECT, JInvocation.class);//
+            context.put(MapperCodes.INNER_SELECT, selectInvoke.invoke("back"));
+
+        }
+    }
 }
