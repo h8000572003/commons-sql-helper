@@ -1,9 +1,7 @@
 package io.github.h800572003.sql.generate;
 
-import io.github.h800572003.sql.ISql;
-import io.github.h800572003.sql.ISqlGenerator;
-import io.github.h800572003.sql.Selects;
-import io.github.h800572003.sql.SqlBuilder;
+import io.github.h800572003.sql.*;
+import io.github.h800572003.sql.select.SelectBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,7 +20,7 @@ class ISqlGeneratorTest {
         ;
         log.info("code:{}", code);
 
-        Assertions.assertTrue(code.contains("ISql sql = SqlBuilder.body().addSpace(Selects.SELECT.name()).addSpace(\"c1,c2,c3\").addSpace(Selects.FROM.name()).addSpace(\"table\");"));
+        Assertions.assertTrue(code.contains(" ISql sql = SqlBuilder.body().addWithSpace(SelectBuilder.newSelect().createSelect().add(\"c1,c2,c3\").back().from(SqlBuilder.write(\"table\")));"));
 
 
     }
@@ -37,21 +35,39 @@ class ISqlGeneratorTest {
 
         log.info("code:{}", code);
 
-        Assertions.assertTrue(code.contains(" ISql sql = SqlBuilder.body().addSpace(Selects.SELECT.name()).addSpace(\"c1,c2,c3\").addSpace(Selects.FROM.name()).addSpace(\"table\").addSpace(Selects.WHERE.name()).addSpace(\"a=:a\").addSpace(Selects.AND.name()).addSpace(\"b=:b\").addSpace(Selects.AND.name()).addSpace(\"c=:c\")"));
+        Assertions.assertTrue(code.contains("ISql sql = SqlBuilder.body().addWithSpace(SelectBuilder.newSelect().createSelect().add(\"c1,c2,c3\").back().from(SqlBuilder.write(\"table\")).createWhere(SqlBuilder.write(\"a=:a\")).and(SqlBuilder.write(\"b=:b\")).and(SqlBuilder.write(\"c=:c\")).back())"));
 
 
+
+
+
+    }
+    @Test
+    void exportUnion() {
+
+        ISqlGenerator generator = new ISqlGenerator();
+
+        String code = generator.export("Test", "select c3,c2,c1 from table union select c1,c2,c3 from table2");
+        log.info("code:{}", code);
+
+        Assertions.assertTrue(code.contains("ISql sql = SqlBuilder.body().addWithSpace(SelectBuilder.newSelect().createSelect().add(\"c3,c2,c1\").back().from(SqlBuilder.write(\"table\")).appendWithSpace(\"union\")).addWithSpace(SelectBuilder.newSelect().createSelect().add(\"c1,c2,c3\").back().from(SqlBuilder.write(\"table2\")))"));
 
     }
 
 
 
 
-    public static void main(String[] args) {
-        ISql isql = SqlBuilder.body()
-                .addSpace("select")
-                .addSpace("c1,c2,c3")
-                .addSpace("from").addSpace("table").addSpace("where").addSpace("a=:a").addSpace("and").addSpace("b=:b").addSpace("and").addSpace("c=:c");
-        System.out.print(isql);
-    }
+        public static void main(String[] args) {
+            ISql sql = SqlBuilder.body()
+                    .addWithSpace(SelectBuilder.newSelect().
+                            createSelect().add("c3,c2,c1").back()
+                            .from(SqlBuilder.write("table"))
+                            .appendWithSpace("union"))
+                    .addWithSpace(SelectBuilder.newSelect().createSelect().add("c1,c2,c3").back().from(SqlBuilder.write("table2")));
+
+
+            System.out.print(sql);
+        }
+
 
 }

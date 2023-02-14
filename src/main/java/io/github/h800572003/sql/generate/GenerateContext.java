@@ -1,6 +1,7 @@
 package io.github.h800572003.sql.generate;
 
 import com.helger.jcodemodel.*;
+import io.github.h800572003.sql.generate.body.MapperCodes;
 
 import java.util.HashMap;
 import java.util.Map;

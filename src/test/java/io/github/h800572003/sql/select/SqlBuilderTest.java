@@ -171,12 +171,12 @@ class SqlBuilderTest {
     @Test
     void testGroupWithSame() {
 
-        ISql select =comma("id","name");
+        ISql select = comma("id", "name");
 
         String sql = SelectBuilder.newSelect()
                 .select(select)
                 .from("student")
-                .groupBy(write(select,write("")))
+                .groupBy(write(select, write("")))
                 .build().toUpperCase();
         log.info("sql:{}", sql);
 
@@ -184,6 +184,7 @@ class SqlBuilderTest {
 
         assertEquals(sql, groupBy.toUpperCase());
     }
+
     @Test
     void testGroup2_isql() {
         String sql = SelectBuilder.newSelect()
@@ -193,9 +194,9 @@ class SqlBuilderTest {
                 .from("STUDENT")
                 .groupBy(
                         comma(write("ID"),
-                                        write(write("NAME")
-                        )))
-                        .build().toUpperCase();
+                                write(write("NAME")
+                                )))
+                .build().toUpperCase();
         log.info("sql:{}", sql);
         final String groupBy = "select max (id) from student group by id,name";
         assertEquals(sql, groupBy.toUpperCase());
@@ -244,7 +245,7 @@ class SqlBuilderTest {
                 .body("name")
                 .back()
                 .from(write("student"))
-                .createWhere(getParameter("id",SqlOption.EQ,quotation("abc")),()->false)
+                .createWhere(getParameter("id", SqlOption.EQ, quotation("abc")), () -> false)
                 .build().toUpperCase();
         log.info("sql:{}", sql);
 
@@ -260,16 +261,15 @@ class SqlBuilderTest {
     void testCreatSelectRequire() {
 
 
-
         String sql = SelectBuilder.newSelect()
                 .createSelect()
                 .body("id")
                 .body("name")
                 .back()
                 .from(write("student"))
-                .createWhere(getParameter("id",SqlOption.EQ,quotation("idA")),()->true)
-                .and(getParameter("nameX",SqlOption.EQ,quotation("nameXB")),()->false)
-                .and(getParameter("name",SqlOption.EQ,quotation("nameX")),()->true)
+                .createWhere(getParameter("id", SqlOption.EQ, quotation("idA")), () -> true)
+                .and(getParameter("nameX", SqlOption.EQ, quotation("nameXB")), () -> false)
+                .and(getParameter("name", SqlOption.EQ, quotation("nameX")), () -> true)
                 .build().toUpperCase();
         log.info("sql:{}", sql);
 
@@ -286,9 +286,9 @@ class SqlBuilderTest {
                 .body("name")
                 .back()
                 .from(write("student"))
-                .createWhere(getParameter("id",SqlOption.EQ,quotation("idA")),()->false)
-                .and(getParameter("nameX",SqlOption.EQ,quotation("nameXB")),()->false)
-                .and(getParameter("name",SqlOption.EQ,quotation("nameX")),()->false)
+                .createWhere(getParameter("id", SqlOption.EQ, quotation("idA")), () -> false)
+                .and(getParameter("nameX", SqlOption.EQ, quotation("nameXB")), () -> false)
+                .and(getParameter("name", SqlOption.EQ, quotation("nameX")), () -> false)
                 .build().toUpperCase();
         log.info("sql:{}", sql);
 
@@ -306,22 +306,23 @@ class SqlBuilderTest {
         String sql = SelectBuilder.newSelect()
                 .select("*")
                 .from("student")
-                .createWhere(getParameter("id",SqlOption.IS_NOT, Selects.NULL))
+                .createWhere(getParameter("id", SqlOption.IS_NOT, Selects.NULL))
                 .build().toUpperCase();
 
 
         String ans = "select * from student where id is not null ";
         log.info("sql:{}", sql);
 
-        assertTrue(SqlEqualUtils.isEqual(ans,sql));
+        assertTrue(SqlEqualUtils.isEqual(ans, sql));
     }
+
     @Test
     void testSqlIsNull() {
 
         String sql = SelectBuilder.newSelect()
                 .select("*")
                 .from("student")
-                .createWhere(getParameter("id",SqlOption.IS, Selects.NULL))
+                .createWhere(getParameter("id", SqlOption.IS, Selects.NULL))
                 .build().toUpperCase();
 
 
@@ -342,7 +343,7 @@ class SqlBuilderTest {
     }
 
     @Test
-    public void test_with_as_name(){
+    public void test_with_as_name() {
         ValueParameter parameter = getParameter("value", "A", SqlOption.EQ, write("?"));
 
 
@@ -352,83 +353,112 @@ class SqlBuilderTest {
     }
 
     @Test
-    public void test_where_and_all(){
+    public void test_where_and_all() {
         ValueParameter parameterA = getParameter("id", SqlOption.IS, Selects.NULL);
-        ValueParameter parameterB = getParameter("name",SqlOption.IS_NOT, Selects.NULL);
+        ValueParameter parameterB = getParameter("name", SqlOption.IS_NOT, Selects.NULL);
 
         String sql = SelectBuilder.newSelect()
                 .createSelect()
                 .addAll("id", "name").back()
                 .from("student")
                 .whereAllAnd(
-                        parameterA,parameterB
+                        parameterA, parameterB
                 ).build().toUpperCase();
 
 
-        final String ans="select id,name from student where id is  null and name is not null";
+        final String ans = "select id,name from student where id is  null and name is not null";
 
-        assertTrue(SqlEqualUtils.isEqual(ans,sql));
-
+        assertTrue(SqlEqualUtils.isEqual(ans, sql));
 
 
     }
 
     @Test
-    public void test_where_or_all(){
+    public void test_where_or_all() {
         ValueParameter parameterA = getParameter("id", SqlOption.IS, Selects.NULL);
-        ValueParameter parameterB = getParameter("name",SqlOption.IS_NOT, Selects.NULL);
+        ValueParameter parameterB = getParameter("name", SqlOption.IS_NOT, Selects.NULL);
 
         String sql = SelectBuilder.newSelect()
                 .createSelect()
                 .addAll("id", "name").back()
                 .from("student")
                 .whereAllOr(
-                        parameterA,parameterB
+                        parameterA, parameterB
                 ).build().toUpperCase();
 
 
-        final String ans="select id,name from student where id is  null or name is not null";
+        final String ans = "select id,name from student where id is  null or name is not null";
 
-        assertTrue(SqlEqualUtils.isEqual(ans,sql));
-
+        assertTrue(SqlEqualUtils.isEqual(ans, sql));
 
 
     }
+
     @Test
-    public void test_where(){
+    public void test_where() {
         String sql = SelectBuilder.newSelect()
                 .createSelect()
                 .addAll("id", "name").back()
                 .from("student")
                 .createWhere(
-                        getParameter("id1", SqlOption.EQ,write("?")),()->false)
-                .and(getParameter("id2", SqlOption.EQ,write("?")),()->true)
-                .and(getParameter("id3", SqlOption.EQ,write("?")),()->false)
-                .and(getParameter("id4", SqlOption.EQ,write("?")),()->true)
+                        getParameter("id1", SqlOption.EQ, write("?")), () -> false)
+                .and(getParameter("id2", SqlOption.EQ, write("?")), () -> true)
+                .and(getParameter("id3", SqlOption.EQ, write("?")), () -> false)
+                .and(getParameter("id4", SqlOption.EQ, write("?")), () -> true)
                 .build();
 
 
-        final String all="select id,name from student where id1 =? and) id2 = ? and id3 = ? and id4 = ? ";
-        final String ans="select id,name from student where  id2 = ?  and id4 = ? ";
-        assertTrue(SqlEqualUtils.isEqual(ans,sql));
+        final String all = "select id,name from student where id1 =? and) id2 = ? and id3 = ? and id4 = ? ";
+        final String ans = "select id,name from student where  id2 = ?  and id4 = ? ";
+        assertTrue(SqlEqualUtils.isEqual(ans, sql));
 
     }
+
     @Test
-    public void test_where2(){
+    public void test_where2() {
         String sql = SelectBuilder.newSelect()
                 .createSelect()
                 .addAll("id", "name").back()
                 .from("student")
                 .createWhere(
-                        getParameter("id1", SqlOption.EQ,write("?")),()->false)
-                .and(getParameter("id2", SqlOption.EQ,write("?")),()->true)
-                .and(getParameter("id3", SqlOption.EQ,write("?")),()->true)
-                .or(getParameter("id4", SqlOption.EQ,write("?")),()->true)
+                        getParameter("id1", SqlOption.EQ, write("?")), () -> false)
+                .and(getParameter("id2", SqlOption.EQ, write("?")), () -> true)
+                .and(getParameter("id3", SqlOption.EQ, write("?")), () -> true)
+                .or(getParameter("id4", SqlOption.EQ, write("?")), () -> true)
                 .build();
 
 
-        final String ans="select id,name from student where  id2 = ?  and id3 = ? or id4 = ? ";
-        assertTrue(SqlEqualUtils.isEqual(ans,sql));
+        final String ans = "select id,name from student where  id2 = ?  and id3 = ? or id4 = ? ";
+        assertTrue(SqlEqualUtils.isEqual(ans, sql));
+
+    }
+
+    /**
+     * 測試整合body，提升靈活度
+     */
+    @Test
+    public void test_body() {
+
+        final String sql="select a,b,c from table where id1=? and id2=?";
+
+        ISql iSql = body().//
+                addWithSpace(
+                SelectBuilder
+                        .newSelect()
+                        .createSelect()
+                        .add("a")
+                        .add("b")
+                        .add("c")
+                        .back()
+                        .from("table")
+                        .createWhere(SqlBuilder.body().addWithSpace("id1").addWithSpace("=?"),()->true)
+                        .and(SqlBuilder.body().addWithSpace("id2").addWithSpace("=?"),()->true)
+                        .back()
+
+
+
+        );
+        System.out.print(iSql);
 
     }
 }

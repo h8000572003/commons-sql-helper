@@ -1,5 +1,7 @@
 package io.github.h800572003.sql.generate;
 
+import io.github.h800572003.sql.generate.body.BodyMapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

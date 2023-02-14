@@ -4,6 +4,7 @@ import io.github.h800572003.sql.ISql;
 import io.github.h800572003.sql.ISqlBuilder;
 import io.github.h800572003.sql.Selects;
 import io.github.h800572003.sql.SqlBuilder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +129,10 @@ public class SelectBuilder implements ISqlBuilder, ISql {
      */
     public SelectBuilder append(String append) {
         this.orders.add(SqlBuilder.write(append));
+        return this;
+    }
+    public SelectBuilder appendWithSpace(String append) {
+        this.orders.add(SqlBuilder.write(StringUtils.SPACE,append));
         return this;
     }
 

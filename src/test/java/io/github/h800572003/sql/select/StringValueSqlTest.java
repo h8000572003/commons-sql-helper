@@ -175,10 +175,10 @@ class StringValueSqlTest {
     @Test
     void test_sql_add(){
         ISql select = SqlBuilder.body()
-                .addSpace("select")
-                .addSpace(" *    ")
-                .addSpace(" from  ")
-                .addSpace(" table ");
+                .addWithSpace("select")
+                .addWithSpace(" *    ")
+                .addWithSpace(" from  ")
+                .addWithSpace(" table ");
         assertTrue(SqlEqualUtils.isEqual("select * from table ",select.toString()));
 
     }

@@ -33,10 +33,13 @@ public class Select<T extends ISqlBuilder> implements ISql, ISqlBack<T> {
     }
 
 
-
     public Select<T> add(ISql sql) {
         this.sqls.add(sql);
         return this;
+    }
+
+    public Select<T> add(String sql) {
+        return this.add(SqlBuilder.write(sql));
     }
 
     /**

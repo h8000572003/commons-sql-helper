@@ -1,8 +1,11 @@
 package io.github.h800572003.sql.generate;
 
 import com.helger.jcodemodel.JCodeModel;
+import io.github.h800572003.sql.generate.body.MapperCodes;
 
 public interface IGenerateContext {
+
+
 
 
     JCodeModel getModel();
