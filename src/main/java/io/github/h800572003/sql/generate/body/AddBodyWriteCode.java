@@ -16,6 +16,9 @@ import java.util.Map;
 @Slf4j
 public class AddBodyWriteCode implements ICodeWrite {
 
+
+    private final String SPLIT_PATTEN=",(?=\\w|\\s)";
+
     public static final String SELECT = "SELECT";
     public static final String FROM = "FROM";
     public static final String WHERE = "WHERE";
@@ -104,7 +107,7 @@ public class AddBodyWriteCode implements ICodeWrite {
         } else if (StringUtils.equalsIgnoreCase(value.toUpperCase(), "BY")) {
 
         } else {
-            String[] values = value.split(",");
+            String[] values = value.split(SPLIT_PATTEN);
             for (String v : values) {
                 JCodeModel model = context.getModel();
                 jInvocation = jInvocation.arg(v.trim());
@@ -126,7 +129,7 @@ public class AddBodyWriteCode implements ICodeWrite {
         } else if (StringUtils.equalsIgnoreCase(value.toUpperCase(), "ASC")) {
             //not do
         } else {
-            String[] values = value.split(",");
+            String[] values = value.split(SPLIT_PATTEN);
             for (String v : values) {
                 JCodeModel model = context.getModel();
                 JInvocation write = model.ref(SqlBuilder.class).staticInvoke("write").arg(v.trim());
@@ -137,7 +140,7 @@ public class AddBodyWriteCode implements ICodeWrite {
         }
     }
 
-    private static void addSelect(String value, IGenerateContext context) {
+    private  void addSelect(String value, IGenerateContext context) {
         if (value.toUpperCase().matches("(SELECT)")) {
             addSelectNew(context);
         } else {
@@ -145,7 +148,7 @@ public class AddBodyWriteCode implements ICodeWrite {
         }
     }
 
-    private static void addFrom(String value, IGenerateContext context) {
+    private  void addFrom(String value, IGenerateContext context) {
         if (value.toUpperCase().matches("(FROM)")) {
         } else {
             addFromValue(value, context);
@@ -211,7 +214,7 @@ public class AddBodyWriteCode implements ICodeWrite {
         context.put(MapperCodes.STATUS, newStatus);//
     }
 
-    private static void addFromValue(String value, IGenerateContext context) {
+    private  void addFromValue(String value, IGenerateContext context) {
         JInvocation innerFrom = context.get(MapperCodes.INNER_FROM, JInvocation.class);//
         if (innerFrom == null) {
             JCodeModel model = context.getModel();
@@ -221,9 +224,9 @@ public class AddBodyWriteCode implements ICodeWrite {
         }
     }
 
-    private static void adddSelectAdd(String value, IGenerateContext context) {
+    private  void adddSelectAdd(String value, IGenerateContext context) {
         JInvocation selectInvoke = context.get(MapperCodes.INNER_SELECT, JInvocation.class);//
-        final String[] values = value.split(",");
+        final String[] values = value.split(SPLIT_PATTEN);
         for (String v : values) {
             selectInvoke = selectInvoke.invoke("add").arg(v.trim());
         }

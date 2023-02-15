@@ -1,6 +1,8 @@
 package io.github.h800572003.sql.generate;
 
-import io.github.h800572003.sql.*;
+import io.github.h800572003.sql.ISql;
+import io.github.h800572003.sql.ISqlGenerator;
+import io.github.h800572003.sql.SqlBuilder;
 import io.github.h800572003.sql.select.SelectBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -76,20 +78,22 @@ class ISqlGeneratorTest {
 
     }
 
+    @Test
+    void exportSub() {
 
-    public static void main(String[] args) {
-        ISql sql = SqlBuilder.body().
-                addWithSpace(//
-                        SelectBuilder.newSelect()
-                                .createSelect().add("c3").add("c2").add("c1").back()
-                                .from(SqlBuilder.write("table")
-                        ).appendWithSpace("union"))
-                .addWithSpace(//
-                        SelectBuilder.newSelect()
-                                .createSelect().add("c1").add("c2").add("c3").back()
-                                .from(SqlBuilder.write("table2")));
-        System.out.print(sql);
+
+        String code = generator.export("Test", "select c1,c2,to_char(system,'HH24') from table ");
+
+        log.info("code:{}", code);
+
+        Assertions.assertTrue(code.contains("ISql sql = SqlBuilder.body().addWithSpace(SelectBuilder.newSelect().createSelect().add(\"c1\").add(\"c2\").add(\"to_char(system,'HH24')\").back().from(SqlBuilder.write(\"table\")));\n"));
+
+
     }
+
+
+
+
 
 
 }
