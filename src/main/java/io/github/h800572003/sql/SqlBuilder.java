@@ -238,6 +238,9 @@ public class SqlBuilder implements ISql {
     public static ValueParameter getParameter(String field, ISql operation, ISql value) {
         return new ValueParameter(field, operation, value);
     }
+    public static ValueParameter getParameter(String field, String operation, String value) {
+        return new ValueParameter(field, write(operation), write(value));
+    }
 
     public static ValueParameter getParameter(String field, String asName, ISql operation, ISql value) {
         return new ValueParameter(field + StringUtils.SPACE + asName, operation, value);
